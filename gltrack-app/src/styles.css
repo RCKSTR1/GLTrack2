@@ -16,10 +16,16 @@ div.content {
 .row {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
 }
 
-.row-item {
-    width: -webkit-fill-available;
+.row-item:not(:first-child) {
+    margin-left: 10px;
+}
+
+.row-item.grow {
+    flex-grow: 1;
 }
 
 .mat-table {
