@@ -1,58 +1,72 @@
 <h1>Niveles de glucosa</h1>
+
 <mat-card>
+  <mat-card-title>Nuevo registro</mat-card-title>
+  <div class="row">
+    <mat-form-field class="row-item grow">
+      <input matInput placeholder="Nivel de glucosa" [(ngModel)]="nuevoRegistro.Nivel" required>
+    </mat-form-field>
+    <mat-form-field class="row-item grow">
+      <mat-label>Comida</mat-label>
+      <mat-select [(ngModel)]="nuevoRegistro.Comida" required>
+        <mat-option value="Desayuno">Desayuno</mat-option>
+        <mat-option value="Comida">Comida</mat-option>
+        <mat-option value="Cena">Cena</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="row-item grow">
+      <mat-label>Antes o después de alimentos</mat-label>
+      <mat-select [(ngModel)]="nuevoRegistro.AntesDespues">
+        <mat-option value="Antes">Antes</mat-option>
+        <mat-option value="Despues">Después</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="row-item grow">
+      <input matInput type="datetime-local" placeholder="Fecha" [(ngModel)]="nuevoRegistro.Fecha">
+    </mat-form-field>
+    <button class="row-item" mat-button [disabled]="IsInvalid()" (click)="Guardar()">
+      <mat-icon>save</mat-icon> Guardar
+    </button>
+    <button class="row-item" mat-button (click)="LimpiarForma()">
+      <mat-icon>delete</mat-icon> Cancelar
+    </button>
+  </div>
+  {{nuevoRegistro|json}}
+</mat-card>
+
+<mat-card>
+  <mat-card-title>Mis registros</mat-card-title>
   <div class="row">
     <mat-form-field class="row-item grow">
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar">
     </mat-form-field>
-    <button class="row-item" mat-button>
-      <mat-icon>add</mat-icon> Nueva medición
-    </button>
-    <button class="row-item" mat-button disabled="{{!selection.hasValue()}}">
-      <mat-icon>delete</mat-icon> Eliminar seleccionados
-    </button>
   </div>
 
   <table mat-table [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="select">
-      <th mat-header-cell *matHeaderCellDef>
-        <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-          [indeterminate]="selection.hasValue() && !isAllSelected()" (click)="EliminarSeleccionados()">
-        </mat-checkbox>
-      </th>
-      <td mat-cell *matCellDef="let row,i">
-        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
-          [checked]="selection.isSelected(row)">
-        </mat-checkbox>
-      </td>
+    <ng-container matColumnDef="fecha">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
+      <td mat-cell *matCellDef="let row"> {{row.Fecha|date:'medium'}} </td>
     </ng-container>
-    <!-- ID Column -->
-    <ng-container matColumnDef="id">
+
+    <ng-container matColumnDef="nivel">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-      <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+      <td mat-cell *matCellDef="let row"> {{row.Nivel}} </td>
     </ng-container>
 
-    <!-- Progress Column -->
-    <ng-container matColumnDef="progress">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Progress </th>
-      <td mat-cell *matCellDef="let row"> {{row.progress}}% </td>
+    <ng-container matColumnDef="comida">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Comida </th>
+      <td mat-cell *matCellDef="let row"> {{row.Comida}} </td>
     </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-      <td mat-cell *matCellDef="let row"> {{row.name}} </td>
-    </ng-container>
-
-    <!-- Color Column -->
-    <ng-container matColumnDef="color">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Color </th>
-      <td mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.color}} </td>
+    <ng-container matColumnDef="antesDespues">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Antes/Después </th>
+      <td mat-cell *matCellDef="let row"> {{row.AntesDespues}} </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> </th>
       <td mat-cell *matCellDef="let row">
-        <button mat-icon-button>
+        <button mat-icon-button (click)="Eliminar(row.Id)">
           <mat-icon>delete</mat-icon>
         </button>
       </td>
